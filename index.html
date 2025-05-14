@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>User Registration Form</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&family=Open+Sans:wght@400;600&display=swap');
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #f0f0f0;
+    }
+    .container {
+      background: #121819;
+      padding: 30px 40px;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      width: 100%;
+      max-width: 420px;
+      color: #e1e8f0;
+    }
+    h2 {
+      margin-bottom: 24px;
+      font-family: 'Roboto Slab', serif;
+      font-weight: 700;
+      text-align: center;
+      color: #82e9de;
+      letter-spacing: 1.3px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #a3c9c9;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      padding: 14px 18px;
+      margin-bottom: 14px;
+      border: 2px solid #2e3c42;
+      border-radius: 12px;
+      font-size: 17px;
+      background-color: #1d262b;
+      color: #d4e9e6;
+      transition: border-color 0.3s ease, background-color 0.3s ease;
+    }
+    input[type="text"]::placeholder,
+    input[type="email"]::placeholder,
+    input[type="password"]::placeholder {
+      color: #75858b;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      border-color: #82e9de;
+      background-color: #22363b;
+      outline: none;
+      color: #e0f7f4;
+    }
+    .error {
+      border-color: #f05454 !important;
+      background-color: #311111;
+      color: #ffd9d9 !important;
+    }
+    .error-message {
+      color: #f05454;
+      font-size: 14px;
+      margin-top: -10px;
+      margin-bottom: 12px;
+      font-weight: 500;
+      min-height: 20px;
+      font-style: italic;
+    }
+    button {
+      padding: 14px;
+      font-size: 17px;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      background: #82e9de;
+      color: #121819;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      margin-top: 6px;
+      box-shadow: 0 6px 15px rgba(130, 233, 222, 0.5);
+      user-select: none;
+    }
+    button:disabled {
+      background: #4a7c7a;
+      cursor: not-allowed;
+      box-shadow: none;
+      color: #a4b5b4;
+    }
+    button:hover:not(:disabled) {
+      background: #66cfc7;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 207, 199, 0.7);
+    }
+    .success-message {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 14px;
+      background-color: #27ae60;
+      color: #d1f5d3;
+      font-weight: 700;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(39, 174, 96, 0.7);
+      user-select: none;
+    }
+
+    /* Scrollbar styling for inputs on small devices */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      scrollbar-width: thin;
+      scrollbar-color: #82e9de #1d262b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main">
+    <h2>User Registration</h2>
+    <form id="registrationForm" novalidate>
+      <label for="fullName">Full Name</label>
+      <input type="text" id="fullName" name="fullName" aria-describedby="fullNameError" placeholder="Enter your full name" required />
+      <div class="error-message" id="fullNameError" aria-live="polite"></div>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" aria-describedby="emailError" placeholder="name@example.com" required />
+      <div class="error-message" id="emailError" aria-live="polite"></div>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" aria-describedby="passwordError" placeholder="Minimum 6 characters" required />
+      <div class="error-message" id="passwordError" aria-live="polite"></div>
+
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password" id="confirmPassword" name="confirmPassword" aria-describedby="confirmPasswordError" placeholder="Repeat your password" required />
+      <div class="error-message" id="confirmPasswordError" aria-live="polite"></div>
+
+      <button type="submit" id="submitBtn" disabled>Register</button>
+    </form>
+    <div id="successMessage" class="success-message" role="alert" style="display:none;">
+      Registration successful!
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const form = document.getElementById('registrationForm');
+      const fullNameInput = form.fullName;
+      const emailInput = form.email;
+      const passwordInput = form.password;
+      const confirmPasswordInput = form.confirmPassword;
+      const submitBtn = document.getElementById('submitBtn');
+
+      const fullNameError = document.getElementById('fullNameError');
+      const emailError = document.getElementById('emailError');
+      const passwordError = document.getElementById('passwordError');
+      const confirmPasswordError = document.getElementById('confirmPasswordError');
+      const successMessage = document.getElementById('successMessage');
+
+      function validateName() {
+        const value = fullNameInput.value.trim();
+        if (!value) {
+          fullNameError.textContent = 'Full name cannot be empty';
+          fullNameInput.classList.add('error');
+          return false;
+        } else {
+          fullNameError.textContent = '';
+          fullNameInput.classList.remove('error');
+          return true;
+        }
+      }
+
+      function validateEmail() {
+        const value = emailInput.value.trim();
+        // Simple email regex from HTML5 spec
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!value) {
+          emailError.textContent = 'Email cannot be empty';
+          emailInput.classList.add('error');
+          return false;
+        } else if (!emailRegex.test(value)) {
+          emailError.textContent = 'Invalid email format';
+          emailInput.classList.add('error');
+          return false;
+        } else {
+          emailError.textContent = '';
+          emailInput.classList.remove('error');
+          return true;
+        }
+      }
+
+      function validatePassword() {
+        const value = passwordInput.value;
+        if (value.length < 6) {
+          passwordError.textContent = 'Password must be at least 6 characters';
+          passwordInput.classList.add('error');
+          return false;
+        } else {
+          passwordError.textContent = '';
+          passwordInput.classList.remove('error');
+          return true;
+        }
+      }
+
+      function validateConfirmPassword() {
+        const pwValue = passwordInput.value;
+        const confirmValue = confirmPasswordInput.value;
+        if (confirmValue !== pwValue) {
+          confirmPasswordError.textContent = 'Passwords do not match';
+          confirmPasswordInput.classList.add('error');
+          return false;
+        } else {
+          confirmPasswordError.textContent = '';
+          confirmPasswordInput.classList.remove('error');
+          return true;
+        }
+      }
+
+      function validateForm() {
+        const validName = validateName();
+        const validEmail = validateEmail();
+        const validPwd = validatePassword();
+        const validConfirm = validateConfirmPassword();
+        const valid = validName && validEmail && validPwd && validConfirm;
+        submitBtn.disabled = !valid;
+        return valid;
+      }
+
+      // Attach event listeners for real-time validation
+      fullNameInput.addEventListener('input', () => {
+        validateName();
+        validateForm();
+      });
+      emailInput.addEventListener('input', () => {
+        validateEmail();
+        validateForm();
+      });
+      passwordInput.addEventListener('input', () => {
+        validatePassword();
+        validateConfirmPassword(); // also check confirm password because password changed
+        validateForm();
+      });
+      confirmPasswordInput.addEventListener('input', () => {
+        validateConfirmPassword();
+        validateForm();
+      });
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (validateForm()) {
+          // Save data to localStorage except confirm password
+          const userData = {
+            fullName: fullNameInput.value.trim(),
+            email: emailInput.value.trim(),
+            password: passwordInput.value // Storing raw password in localStorage is not secure but done here for demo only
+          };
+          localStorage.setItem('userRegistrationData', JSON.stringify(userData));
+
+          // Show success message
+          successMessage.style.display = 'block';
+
+          // Reset form and disable submit
+          form.reset();
+          submitBtn.disabled = true;
+
+          // Clear all error states and messages
+          fullNameError.textContent = '';
+          emailError.textContent = '';
+          passwordError.textContent = '';
+          confirmPasswordError.textContent = '';
+          fullNameInput.classList.remove('error');
+          emailInput.classList.remove('error');
+          passwordInput.classList.remove('error');
+          confirmPasswordInput.classList.remove('error');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
+
